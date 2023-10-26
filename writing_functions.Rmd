@@ -1,0 +1,10 @@
+---
+title: "writing functions"
+author: "Yuki Joyama"
+date: "2023-10-26"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
