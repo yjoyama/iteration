@@ -23,6 +23,8 @@ library(tidyverse)
     ## ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
 
 ``` r
+set.seed(1)
+
 sim_mean_sd = function(n_obs, mu = 5, sigma = 1) {
   
   x_vec = rnorm(n = n_obs, mean = mu, sd = sigma)
@@ -44,7 +46,7 @@ sim_mean_sd(n_obs = 30)
     ## # A tibble: 1 × 2
     ##    mean    sd
     ##   <dbl> <dbl>
-    ## 1  4.96  1.03
+    ## 1  5.08 0.924
 
 Let’s iterate to see how this works UNDER REPEATED SAMPLING!!!
 
@@ -74,4 +76,26 @@ sim_results |>
     ## # A tibble: 1 × 2
     ##   mu_hat sd_hat
     ##    <dbl>  <dbl>
-    ## 1   5.00  0.174
+    ## 1   4.99  0.192
+
+use a map function
+
+``` r
+sim_results_df = 
+  expand_grid(
+    sample_size = c(30, 60, 120, 240),
+    iter = 1:1000
+  ) |> 
+  mutate(estimate_df = map(sample_size, sim_mean_sd)) |> 
+  unnest(estimate_df)
+
+sim_results_df |> 
+  mutate(
+    sample_size = str_c("n = ", sample_size),
+    sample_size = fct_inorder(sample_size)
+  ) |> 
+  ggplot(aes(x = sample_size, y = mean)) +
+  geom_boxplot()
+```
+
+![](simulation_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
