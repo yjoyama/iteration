@@ -1,0 +1,61 @@
+---
+title: "Simulation"
+author: "Yuki Joyama"
+date: "2023-11-02"
+output: github_document
+---
+
+## Simulate sample mean and sd
+
+Here's an old function
+
+```{r}
+library(tidyverse)
+
+sim_mean_sd = function(n_obs, mu = 5, sigma = 1) {
+  
+  x_vec = rnorm(n = n_obs, mean = mu, sd = sigma)
+  
+  tibble(
+    mean = mean(x_vec),
+    sd = sd(x_vec)
+  )
+  
+}
+```
+
+Let's see what this does
+
+```{r}
+sim_mean_sd(n_obs = 30)
+```
+
+Let's iterate to see how this works UNDER REPEATED SAMPLING!!!
+
+```{r}
+output = vector("list", length = 100)
+
+for (i in 1:100) {
+  output[[i]] = sim_mean_sd(n_obs = 30)
+}
+
+sim_results = bind_rows(output)
+
+sim_results |> 
+  ggplot(aes(x = mean)) + geom_density()
+
+sim_results |>
+  summarise(
+    mu_hat = mean(mean),
+    sd_hat = sd(mean)
+  )
+  
+```
+
+
+
+
+
+
+
+
